@@ -1,0 +1,7 @@
+version: 2
+sources:
+  - name: raw
+    database: REAL_ESTATE_ANALYSIS
+    schema: RAW
+    tables:
+      - name: property_listings_raw

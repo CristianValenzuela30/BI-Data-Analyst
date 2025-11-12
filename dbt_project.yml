@@ -1,0 +1,39 @@
+name: 'portugal_real_estate' # Unique name of your DBT project, this will appear in Logs, Docs, Lineage
+version: '1.0.0' # Your project version, example, when you publish docs it shows v1.0.0, later you'll do 1.1 or 1.1.2 when you add more Features/Transformations
+config-version: 2 # this tell DBT im using the modern config format(v2), do not change, all projects since 2021 use config-version: 2
+
+profile: 'default' # use the connection called default from my profiles.yml, but in DBT cloud it just uses the conection you set up (snowflake in this case), do not change
+
+# PATHS: where DBT will look for files, dont change
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target" # where DBT puts compiled SQL, logs, and run results
+clean-targets: # What directories get wiped when you run dbt clean
+  - "target"
+  - "dbt_packages"
+
+models:
+  portugal_real_estate: # This must match your project name above (name, line 1)
+    staging: # folder that you must create in dbt, so it would be models->staging
+      +materialized: view # this will create a view not a tabel
+      +schema: analytics # the transformation will go here to schema analytics in snowflake
+      +tags: ["staging"] # tags are used to run all the models inside a specific folder e.g. dbt build --select tag:staging
+    intermediate: # Folder
+      +materialized: ephemeral # creates a CTE type table, no storage cost
+      +schema: analytics
+    marts: # folder
+      +materialized: table
+      +schema: analytics
+      +tags: ["marts"]
+
+vars: # variables that you can use in your queries, just like python variables, e.g. {{ var('min_price') }}
+  min_price: 50000
+  max_price: 50000000
+  min_area_sqm: 1
+  max_area_sqm: 50000
+  portugal_start_date: '2010-01-01'

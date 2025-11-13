@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: int_property_listings_price
+    description: "Intermediate model with price imputation and outlier removal using Tukey IQR per city. Ephemeral — no table created."

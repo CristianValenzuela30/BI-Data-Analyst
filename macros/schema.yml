@@ -1,0 +1,5 @@
+version: 2
+
+macros:
+  - name: drop_my_schema
+    description: "Safely drops an entire dbt schema in Snowflake. Use with: dbt run-operation drop_my_schema --args '{schema_name: DBT_CRISTIAN_ANALYTICS}'"

@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: stg_raw_property_listings
+    description: "Cleaned and standardized raw property listings from Portugal. Removes duplicates, trims strings, safely casts prices and dates. Source: RAW.PROPERTY_LISTINGS_RAW"
+    columns:
+      - name: city
+        description: "City name (UPPERCASE, trimmed)"
+        tests:
+          - not_null
+      - name: town
+        description: "Town/municipality (UPPERCASE, trimmed)"
+      - name: district
+        description: "District (UPPERCASE, trimmed)"
+      - name: property_type
+        description: "Type of property (Apartment, House, Land, etc.)"
+      - name: construction_year
+        description: "Year of construction (safely cast with TRY_TO_NUMBER)"
+      - name: price_raw
+        description: "Price in EUR (decimal, commas removed)"
+      - name: loaded_at
+        description: "Timestamp when row was loaded into RAW"

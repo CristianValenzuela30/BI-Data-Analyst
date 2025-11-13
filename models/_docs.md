@@ -10,4 +10,4 @@
 ## Layers
 - **staging**: clean raw data
 - **intermediate**: price imputation + outlier removal
-- **marts**: final tables for Power BI / Tableau / Looker
+- **marts**: final tables for Power BI / Tableau / Looker.

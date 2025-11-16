@@ -2,8 +2,8 @@
 
 {{ impute_bedrooms_wc(
       Category           = Category,
-      Number_Of_Bedrooms = {{ coalesce('Number_Of_Bedrooms', '0') }},
-      Number_Of_WC       = {{ coalesce('Number_Of_WC', '0') }},
+      Number_Of_Bedrooms = Number_Of_Bedrooms,
+      Number_Of_WC       = Number_Of_WC,
       Living_Area        = Living_Area
    )
 }}

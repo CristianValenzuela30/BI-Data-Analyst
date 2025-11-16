@@ -54,17 +54,3 @@ models:
       - name: Town
         tests:
           - not_null
-
-      # ========================================
-      # 6. IMPUTED COLUMNS (intermediate model)
-      # ========================================
-      - name: Bedrooms_Imputed
-        tests:
-          - not_null
-          - dbt_expectations.expect_column_values_to_be_of_type:
-              column_type: NUMBER
-      - name: WC_Imputed
-        tests:
-          - not_null
-          - dbt_expectations.expect_column_values_to_be_of_type:
-              column_type: NUMBER

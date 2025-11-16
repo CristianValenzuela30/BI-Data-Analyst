@@ -1,10 +1,10 @@
 {{ config(materialized='view') }}
 
 {{ impute_bedrooms_wc(
-      Category           = Category,
-      Number_Of_Bedrooms = Number_Of_Bedrooms,
-      Number_Of_WC       = Number_Of_WC,
-      Living_Area        = Living_Area
+      Category           = 'Category',
+      Number_Of_Bedrooms = 'Number_Of_Bedrooms',
+      Number_Of_WC       = 'Number_Of_WC',
+      Living_Area        = 'Living_Area'
    )
 }}
 

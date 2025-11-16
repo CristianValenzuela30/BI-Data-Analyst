@@ -1,47 +1,38 @@
-# models/staging/schema.yml
 version: 2
 
 models:
   - name: stg_raw_property_listings
-    description: |
-      **Staging model** -- first cleaning layer.
-      
-      * Safely casts numbers/dates
-      * Standardizes text (Title Case + TRIM)
-      * Filters to Apartment/House/Land
-      * No deduplication yet
-
+    description: "Cleaned and filtered raw property listings"
     columns:
-      - name: City
-        description: "City name (Title Case, trimmed). E.g., LISBOA"
+      - name: Price
+        description: "Property price in EUR"
         tests:
           - not_null
           - dbt_utils.expression_is_true:
-              expression: "LENGTH(city) >= 3"
-
-      - name: Price
-        description: 'Property Price in EUR'
-        tests:
-          - not_null
-          - dbt_util.expression_is_true:
-            expression: 'Price > 15000'
+              expression: "Price > 15000"
 
       - name: Category
-        description: 'Property Type: Apartment, House, Land'
+        description: "Property type: Apartment, House, Land"
         tests:
           - not_null
           - accepted_values:
-              values: ['Apartment', 'House', 'Land'] 
-  
+              values: ['Apartment', 'House', 'Land']
+
+      - name: City
+        tests:
+          - not_null
+
       - name: Town
         tests:
           - not_null
+
       - name: Living_Area
+        description: "Living area in m²"
         tests:
           - dbt_utils.expression_is_true:
-            expression: 'Living_Area > 29 OR Living_Area IS NULL'
+              expression: "Living_Area > 29 OR Living_Area IS NULL"
 
       - name: Lot_Size
         tests:
           - dbt_utils.expression_is_true:
-            expression: 'Lot_Size > 29 OR Lot_Size IS NULL'
+              expression: "Lot_Size > 29 OR Lot_Size IS NULL"

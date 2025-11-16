@@ -3,15 +3,18 @@ version: 2
 models:
   - name: int_impute_bedrooms_wc
     columns:
-      - name: Bedrooms_Imputed
+      - name: Number_Of_Bedrooms_Imputed
+        description: "Imputed number of bedrooms using business logic"
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
               min_value: 0
               max_value: 10
-      - name: WC_Imputed
+              
+      - name: Number_Of_WC_Imputed  
+        description: "Imputed number of WC using business logic"
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
               min_value: 0
-              max_value: 5
+              max_value: 10

@@ -31,13 +31,13 @@
 
         /* ---- Only bedrooms missing ---- */
         WHEN COALESCE({{ Number_Of_Bedrooms }}, 0) = 0 THEN
-          GREATEST(1, FLOOR({{ Living_Area }} / 40)) AS WC_Imputed,
-          COALESCE(NULLIF({{ Number_Of_WC }}, 0), 1)  AS Wc_Imputed
+          GREATEST(1, FLOOR({{ Living_Area }} / 40)) AS Bedrooms_Imputed,
+          COALESCE(NULLIF({{ Number_Of_WC }}, 0), 1)  AS WC_Imputed
 
         /* ---- Only WC missing ---- */
         WHEN COALESCE({{ Number_Of_WC }}, 0) = 0 THEN
           {{ Number_Of_Bedrooms }}                         AS Bedrooms_Imputed,
-          GREATEST(1, FLOOR({{ Number_Of_WC }} / 60))      AS WC_Imputed
+          GREATEST(1, FLOOR({{ Living_Area }} / 60))      AS WC_Imputed
 
         /* ---- Both present → keep original ---- */
         ELSE
@@ -49,7 +49,7 @@
        3. ANY OTHER TYPE → keep raw
        ------------------------------------------------- */
     ELSE
-      {{ Number_Of_Bedroomss }} AS Bedrooms_Imputed,
+      {{ Number_Of_Bedrooms }} AS Bedrooms_Imputed,
       {{ Number_Of_WC }}       AS WC_Imputed
   END
 

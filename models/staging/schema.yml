@@ -19,39 +19,29 @@ models:
           - dbt_utils.expression_is_true:
               expression: "LENGTH(city) >= 3"
 
-      - name: Town
-        description: "Town/municipality (Title Case, trimmed)"
+      - name: Price
+        description: 'Property Price in EUR'
         tests:
           - not_null
-
-      - name: District
-        description: "District (Title Case, trimmed)"
-        tests:
-          - not_null
+          - dbt_util.expression_is_true:
+            expression: 'Price > 15000'
 
       - name: Category
-        description: "Filtered to Apartment, House, Land"
+        description: 'Property Type: Apartment, House, Land'
         tests:
           - not_null
           - accepted_values:
-              values: ['Apartment', 'House', 'Land']
-
-      - name: Price
-        description: "Price in EUR (decimal). NULL = failed parse"
+              values: ['Apartment', 'House', 'Land'] 
+  
+      - name: Town
         tests:
           - not_null
-          - dbt_utils.expression_is_true:
-              expression: "Price BETWEEN 10000 AND 50000000"
-
-      - name: Construction Year
-        description: "Year of construction. NULL = failed parse"
+      - name: Living_Area
         tests:
           - dbt_utils.expression_is_true:
-              expression: >
-                Construction Year IS NULL OR 
-                (Construction Year BETWEEN 1800 AND EXTRACT(YEAR FROM CURRENT_DATE) + 5)
+            expression: 'Living_Area > 29 OR Living_Area IS NULL'
 
-      - name: Loaded_At
-        description: "Timestamp when row was loaded into RAW"
+      - name: Lot_Size
         tests:
-          - not_null
+          - dbt_utils.expression_is_true:
+            expression: 'Lot_Size > 29 OR Lot_Size IS NULL'

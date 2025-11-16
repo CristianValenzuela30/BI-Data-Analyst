@@ -2,10 +2,10 @@
 
 -- Call the macro and return the two imputed columns
 {{ impute_bedrooms_wc(
-      Category           = 'Category',
-      Number_Of_Bedrooms = 'COALESCE(Number_Of_Bedrooms, 0)',
-      Number_Of_WC       = 'COALESCE(Number_Of_WC, 0)',
-      Living_Area        = 'Living_Area'
+      Category           = Category,
+      Number_Of_Bedrooms = COALESCE(Number_Of_Bedrooms, 0),
+      Number_Of_WC       = COALESCE(Number_Of_WC, 0),
+      Living_Area        = Living_Area
    )
 }}
 

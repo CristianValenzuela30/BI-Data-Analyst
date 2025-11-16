@@ -11,39 +11,31 @@ models:
         description: "Living area in m²"
         tests:
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 30
-              row_condition: "Living_Area IS NOT NULL"
-
-      # ========================================
-      # 2. LOT SIZE: must be ≥ 30 (if not NULL)
-      # ========================================
+              arguments:
+                min_value: 30
+                row_condition: "Living_Area IS NOT NULL"
       - name: Lot_Size
         description: "Lot size in m²"
         tests:
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 30
-              row_condition: "Lot_Size IS NOT NULL"
-
-      # ========================================
-      # 3. PRICE: > 15,000
-      # ========================================
+              arguments:
+                min_value: 30
+                row_condition: "Lot_Size IS NOT NULL"
       - name: Price
         description: "Property price in EUR"
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 15001
-              row_condition: "Price IS NOT NULL"
-
-      # ========================================
-      # 4. CATEGORY: only valid types
-      # ========================================
+              arguments:
+                min_value: 15001
+                row_condition: "Price IS NOT NULL"
       - name: Category
         description: "Property type"
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_in_set:
-              value_set: ['Apartment', 'House', 'Land']
+              arguments:
+                value_set: ['Apartment', 'House', 'Land']
 
       # ========================================
       # 5. CITY & TOWN: not null

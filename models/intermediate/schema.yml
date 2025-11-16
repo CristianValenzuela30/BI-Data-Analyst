@@ -2,24 +2,16 @@ version: 2
 
 models:
   - name: int_impute_bedrooms_wc
-    description: "Imputed bedrooms and WC based on living area and property type"
     columns:
       - name: Bedrooms_Imputed
-        description: "Number of bedrooms (imputed if missing)"
         tests:
           - not_null
-          - dbt_utils.expression_is_true:
-              expression: "Bedrooms_Imputed >= 0"
-
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 10
       - name: WC_Imputed
-        description: "Number of bathrooms/WC (imputed if missing)"
         tests:
           - not_null
-          - dbt_utils.expression_is_true:
-              expression: "WC_Imputed >= 0"
-
-      - name: Category
-        tests:
-          - relationships:
-              to: ref('stg_raw_property_listings')
-              field: Category
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 5

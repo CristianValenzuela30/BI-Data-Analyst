@@ -1,57 +1,56 @@
-{# macros/impute_bedrooms_wc.sql #}
-{% macro impute_bedrooms_wc(property_type, number_of_bedrooms, number_of_wc, living_area) %}
+{% macro impute_bedrooms_wc(Category, Number_Of_Bedrooms, Number_Of_WC, Living_Area) %}
 
   CASE
     /* -------------------------------------------------
-       1. LAND → everything is 0
+       1. LAND → 0 / 0
        ------------------------------------------------- */
-    WHEN LOWER({{ property_type }}) = 'land' THEN
-      0 AS bedrooms_imputed,
-      0 AS wc_imputed
+    WHEN {{ Category }} = 'Land' THEN
+      0 AS Bedrooms_Imputed,
+      0 AS WC_Imputed
 
     /* -------------------------------------------------
        2. APARTMENT / HOUSE
        ------------------------------------------------- */
-    WHEN LOWER({{ property_type }}) IN ('apartment', 'house') THEN
+    WHEN {{ Category }} IN ('Apartment', 'House') THEN
       CASE
-        /* ---- Both bedrooms & WC are missing (0 or NULL) ---- */
-        WHEN COALESCE({{ number_of_bedrooms }}, 0) = 0
-         AND COALESCE({{ number_of_wc }},       0) = 0 THEN
+        /* ---- Both missing → impute from area ---- */
+        WHEN COALESCE({{ Number_Of_Bedrooms }}, 0) = 0
+         AND COALESCE({{ Number_Of_WC }},       0) = 0 THEN
           CASE
-            WHEN {{ living_area }} IS NULL THEN
-              1 AS bedrooms_imputed, 1 AS wc_imputed      -- safe default
-            WHEN {{ living_area }} < 30 THEN
-              1 AS bedrooms_imputed, 1 AS wc_imputed      -- studio
-            WHEN {{ living_area }} < 60 THEN
-              1 AS bedrooms_imputed, 1 AS wc_imputed      -- 1-bed
-            WHEN {{ living_area }} < 90 THEN
-              2 AS bedrooms_imputed, 1 AS wc_imputed      -- 2-bed
+            WHEN {{ Living_Area }} IS NULL THEN
+              1 AS Bedrooms_Imputed, 1 AS WC_Imputed
+            WHEN {{ Living_Area }} < 30 THEN
+              1 AS Bedrooms_Imputed, 1 AS WC_Imputed
+            WHEN {{ Living_Area }} < 60 THEN
+              1 AS Bedrooms_Imputed, 1 AS WC_Imputed
+            WHEN {{ Living_Area }} < 90 THEN
+              2 AS Bedrooms_Imputed, 1 AS WC_Imputed
             ELSE
-              2 AS bedrooms_imputed, 2 AS wc_imputed      -- larger
+              2 AS Bedrooms_Imputed, 2 AS WC_Imputed
           END
 
         /* ---- Only bedrooms missing ---- */
-        WHEN COALESCE({{ number_of_bedrooms }}, 0) = 0 THEN
-          GREATEST(1, FLOOR({{ living_area }} / 40)) AS bedrooms_imputed,
-          COALESCE(NULLIF({{ number_of_wc }}, 0), 1)  AS wc_imputed
+        WHEN COALESCE({{ Number_Of_Bedrooms }}, 0) = 0 THEN
+          GREATEST(1, FLOOR({{ Living_Area }} / 40)) AS WC_Imputed,
+          COALESCE(NULLIF({{ Number_Of_WC }}, 0), 1)  AS Wc_Imputed
 
         /* ---- Only WC missing ---- */
-        WHEN COALESCE({{ number_of_wc }}, 0) = 0 THEN
-          {{ number_of_bedrooms }}                         AS bedrooms_imputed,
-          GREATEST(1, FLOOR({{ living_area }} / 60))      AS wc_imputed
+        WHEN COALESCE({{ Number_Of_WC }}, 0) = 0 THEN
+          {{ Number_Of_Bedrooms }}                         AS Bedrooms_Imputed,
+          GREATEST(1, FLOOR({{ Number_Of_WC }} / 60))      AS WC_Imputed
 
-        /* ---- Both present → keep them ---- */
+        /* ---- Both present → keep original ---- */
         ELSE
-          {{ number_of_bedrooms }} AS bedrooms_imputed,
-          {{ number_of_wc }}       AS wc_imputed
+          {{ Number_Of_Bedrooms }} AS Bedrooms_Imputed,
+          {{ Number_Of_WC }}       AS WC_Imputed
       END
 
     /* -------------------------------------------------
-       3. ANY OTHER TYPE → keep raw values
+       3. ANY OTHER TYPE → keep raw
        ------------------------------------------------- */
     ELSE
-      {{ number_of_bedrooms }} AS bedrooms_imputed,
-      {{ number_of_wc }}       AS wc_imputed
+      {{ Number_Of_Bedroomss }} AS Bedrooms_Imputed,
+      {{ Number_Of_WC }}       AS WC_Imputed
   END
 
 {% endmacro %}

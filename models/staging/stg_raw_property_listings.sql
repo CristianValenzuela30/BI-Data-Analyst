@@ -77,6 +77,7 @@ WHERE
     AND City IS NOT NULL
     AND Town IS NOT NULL
     AND Price > 15000
+    AND Price IS NOT NULL
     AND (Living_Area > 29 OR Living_Area IS NULL)
     AND (Lot_Size > 29 OR Lot_Size IS NULL)
     AND (Number_Of_Rooms <= 4 OR Number_Of_Rooms IS NULL)

@@ -8,7 +8,7 @@
         WHEN {{ living_area }} < 60 THEN 1
         WHEN {{ living_area }} < 90 THEN 2
         WHEN {{ living_area }} < 120 THEN 2
-        WHEN {{ livign_area }} < 200 THEN 3
+        WHEN {{ living_area }} < 200 THEN 3
         ELSE 4
       END
     ELSE COALESCE({{ number_of_wc }}, 0)

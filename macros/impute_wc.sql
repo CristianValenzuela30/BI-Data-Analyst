@@ -11,6 +11,7 @@
         WHEN {{ living_area }} < 200 THEN 3
         ELSE 4
       END
-    ELSE COALESCE({{ number_of_wc }}, 0)
+    -- THIS LINE CHANGED : CAP AT 4
+    ELSE LEAST(COALESCE({{ number_of_wc }}, 0), 4)
   END
 {% endmacro %}

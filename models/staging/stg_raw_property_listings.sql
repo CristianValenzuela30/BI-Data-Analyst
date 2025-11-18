@@ -41,25 +41,21 @@ cleaned_and_imputed AS (
 
         -- ==== Floor Standardization ====
         CASE
-            WHEN Category IN ('House', 'Land') THEN 'Ground Floor'
-            WHEN Category = 'Apartment' THEN
-                CASE
-                    WHEN {{title_case('raw_floor')}} IN ('1st Floor', 'First Floor', 'Primero Piso') THEN 'First Floor'
-                    WHEN {{title_case('raw_floor')}} IN ('2nd Floor', 'Second Floor') THEN 'Second Floor'
-                    WHEN {{title_case('raw_floor')}} IN ('3rd Floor', 'Third Floor') THEN 'Third Floor'
-                    WHEN {{title_case('raw_floor')}} IN ('4th Floor', 'Fourth Floor') THEN '4th to 6th Floor'
-                    WHEN {{title_case('raw_floor')}} IN ('5th Floor', 'Fifth Floor') THEN '4th to 6th Floor'
-                    WHEN {{title_case('raw_floor')}} IN ('6th Floor', 'Sixth Floor') THEN '4th to 6th Floor'
-                    WHEN {{title_case('raw_floor')}} IN ('7th Floor', 'Seventh Floor') THEN '7th to 10th Floor'
-                    WHEN {{title_case('raw_floor')}} IN ('8th Floor', 'Eighth Floor') THEN '7th to 10th Floor'
-                    WHEN {{title_case('raw_floor')}} IN ('9th Floor', 'Ninth Floor') THEN '7th to 10th Floor'
-                    WHEN {{title_case('raw_floor')}} IN ('10th Floor', 'Tenth Floor') THEN '7th to 10th Floor'
-                    WHEN {{title_case('raw_floor')}} IN ('Ground Floor', 'Bajo', 'Basement', 'Basement Level', 'Attic') THEN 'Ground Floor'
-                    WHEN {{title_case('raw_floor')}} IN ('Top Floor', 'Ático', 'Penthouse') THEN 'Above 10th Floor'
-                    ELSE 'Unknown Floor'
-                END
-            ELSE 'Not Applicable'
-        END AS Floor_Standardized,
+            WHEN UPPER(raw_floor) LIKE '%GROUND FLOOR%' THEN 'Ground Floor'
+            WHEN UPPER(raw_floor) LIKE '%1ST FLOOR%' THEN 'First'
+            WHEN UPPER(raw_floor) LIKE '%2ND FLOOR%' THEN 'Second'
+            WHEN UPPER(raw_floor) LIKE '%3RD FLOOR%' THEN 'Third'
+            WHEN UPPER(raw_floor) LIKE '%4TH FLOOR%' THEN 'Fourth'
+            WHEN UPPER(raw_floor) LIKE '%5TH FLOOR%' THEN 'Fifth'
+            WHEN UPPER(raw_floor) LIKE '%6TH FLOOR%' THEN 'Sixth'
+            WHEN UPPER(raw_floor) LIKE '%7TH FLOOR%' THEN 'Seventh'
+            WHEN UPPER(raw_floor) LIKE '%8TH FLOOR%' THEN 'Eight'
+            WHEN UPPER(raw_floor) LIKE '%9TH FLOOR%' THEN 'Nineth'
+            WHEN UPPER(raw_floor) LIKE '%ABOVE 10TH FLOOR%' THEN 'Above 10th Floor'
+            ELSE 'Unknown Floor'
+        END AS Floor_Standardization,
+
+
 
         -- Conservation Status
         COALESCE (

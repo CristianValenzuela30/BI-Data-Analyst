@@ -11,6 +11,7 @@
         WHEN {{ living_area }} < 120 THEN 4
         ELSE 5
       END
-    ELSE COALESCE({{ number_of_bedrooms }}, 0)
+    -- THIS LINE CHANGED: CAP AT 5 EVEN IF RAW VALUE HIGHER  
+    ELSE LEAST(COALESCE({{ number_of_bedrooms }}, 0), 5)
   END
 {% endmacro %}

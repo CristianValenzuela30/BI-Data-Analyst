@@ -8,7 +8,8 @@
         WHEN {{ living_area }} < 30 THEN 1 
         WHEN {{ living_area }} < 60 THEN 2
         WHEN {{ living_area }} < 90 THEN 3
-        ELSE 4
+        WHEN {{ living_area }} < 120 THEN 4
+        ELSE 5
       END
     ELSE COALESCE({{ number_of_bedrooms }}, 0)
   END

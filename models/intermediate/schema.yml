@@ -19,3 +19,8 @@ models:
               arguments:
                 min_value: 0
                 max_value: 10
+
+      - name: property_surrogate_key
+        description: 'SK created with 6 columns'
+        tests:
+          - unique

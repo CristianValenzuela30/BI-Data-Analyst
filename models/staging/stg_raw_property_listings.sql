@@ -20,7 +20,7 @@ cleaned_and_imputed AS (
         try_to_number(raw_construction_year) as construction_year,
         try_to_date(raw_publish_date) as publish_date,
         date(loaded_at) as Loaded_At, -- added loaded at column
-        -- deleted raw_number_of_bedrooms and raw_number_of_bathrooms
+        try_to_number(raw_number_of_bedrooms),
 
         -- ==== Keep and rename ====
         {{title_case('raw_city')}} as city, -- This uses a macro that converts to title case (INITCAP) and also removes trailing or leading spaces (TRIM)
@@ -62,7 +62,7 @@ cleaned_and_imputed AS (
 )
 
 -- Final Selection and Filtering
-Select * FROM cleaned_and_imputed
+Select * EXCEPT(raw_number_of_bedrooms) FROM cleaned_and_imputed
 WHERE 
     -- Critical Filter to eliminate unwanted rows
     Category IN ('Apartment', 'House', 'Land')

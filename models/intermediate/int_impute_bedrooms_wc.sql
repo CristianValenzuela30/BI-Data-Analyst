@@ -3,17 +3,17 @@
 SELECT
     *,
     {{ impute_bedrooms(
-        'Category',
-        'Number_Of_Bedrooms',
-        'Number_Of_WC',
-        'Living_Area'
-    ) }} AS Number_Of_Bedrooms_Imputed,
+        'category',
+        'number_of_bedrooms',
+        'number_of_wc',
+        'living_area'
+    ) }} AS number_Of_bedrooms_imputed,
 
     {{ impute_wc(
-        'Category',
-        'Number_Of_Bedrooms',
-        'Number_Of_WC',
-        'Living_Area'
-    )}} AS Number_Of_WC_Imputed
+        'category',
+        'number_of_bedrooms',
+        'number_of_wc',
+        'living_area'
+    )}} AS number_of_wc_imputed
     
 FROM {{ ref('stg_raw_property_listings') }}

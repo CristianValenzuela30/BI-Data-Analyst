@@ -1,12 +1,12 @@
-{% macro impute_wc(category, number_of_bedrooms, number_of_wc, living_area) %}
+{% macro impute_wc(category, raw_number_of_bedrooms, raw_number_of_wc, living_area) %}
   CASE
     WHEN {{ category }} = 'Land' THEN 0
     
     -- Handle ALL invalid values: NULL, 0, negative, or unreasonably high
     WHEN {{ category }} IN ('Apartment', 'House') AND 
-         ({{ number_of_wc }} IS NULL OR 
-          {{ number_of_wc }} <= 0 OR 
-          {{ number_of_wc }} > 10) THEN  -- Also catch unreasonably high values
+         ({{ raw_number_of_wc }} IS NULL OR 
+          {{ raw_number_of_wc }} <= 0 OR 
+          {{ raw_number_of_wc }} > 10) THEN  -- Also catch unreasonably high values
       CASE
         WHEN {{ living_area }} IS NULL THEN 1
         WHEN {{ living_area }} < 30 THEN 1
@@ -18,6 +18,6 @@
       END
     
     -- Only valid positive values get here - cap at 4
-    ELSE LEAST({{ number_of_wc }}, 4)
+    ELSE LEAST({{ raw_number_of_wc }}, 4)
   END
 {% endmacro %}

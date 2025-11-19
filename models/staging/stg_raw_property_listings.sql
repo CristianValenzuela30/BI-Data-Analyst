@@ -75,3 +75,4 @@ WHERE
     AND price IS NOT NULL
     AND (living_area BETWEEN 30 AND 3000 OR living_area IS NULL) 
     AND (lot_size > 100 OR lot_size IS NULL)
+    AND publish_date IS NOT NULL

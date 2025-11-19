@@ -40,17 +40,17 @@ cleaned_and_imputed AS (
 
         -- ==== Floor Standardization ====
         CASE
-            WHEN UPPER(raw_floor) LIKE '%GROUND FLOOR%' THEN 'Ground Floor'
-            WHEN UPPER(raw_floor) LIKE '%1ST FLOOR%' THEN 'First Floor'
-            WHEN UPPER(raw_floor) LIKE '%2ND FLOOR%' THEN 'Second Floor'
-            WHEN UPPER(raw_floor) LIKE '%3RD FLOOR%' THEN 'Third Floor'
-            WHEN UPPER(raw_floor) LIKE '%4TH FLOOR%' THEN 'Fourth Floor'
-            WHEN UPPER(raw_floor) LIKE '%5TH FLOOR%' THEN 'Fifth Floor'
-            WHEN UPPER(raw_floor) LIKE '%6TH FLOOR%' THEN 'Sixth Floor'
-            WHEN UPPER(raw_floor) LIKE '%7TH FLOOR%' THEN 'Seventh Floor'
-            WHEN UPPER(raw_floor) LIKE '%8TH FLOOR%' THEN 'Eighth Floor'
-            WHEN UPPER(raw_floor) LIKE '%9TH FLOOR%' THEN 'Ninth Floor'
-            WHEN UPPER(raw_floor) LIKE '%ABOVE 10TH FLOOR%' THEN 'Above 10th Floor'
+            WHEN UPPER(TRIM(raw_floor)) LIKE '%GROUND FLOOR%' THEN 'Ground Floor'
+            WHEN UPPER(TRIM(raw_floor)) LIKE '%1ST FLOOR%' THEN 'First Floor'
+            WHEN UPPER(TRIM(raw_floor)) LIKE '%2ND FLOOR%' THEN 'Second Floor'
+            WHEN UPPER(TRIM(raw_floor)) LIKE '%3RD FLOOR%' THEN 'Third Floor'
+            WHEN UPPER(TRIM(raw_floor)) LIKE '%4TH FLOOR%' THEN 'Fourth Floor'
+            WHEN UPPER(TRIM(raw_floor)) LIKE '%5TH FLOOR%' THEN 'Fifth Floor'
+            WHEN UPPER(TRIM(raw_floor)) LIKE '%6TH FLOOR%' THEN 'Sixth Floor'
+            WHEN UPPER(TRIM(raw_floor)) LIKE '%7TH FLOOR%' THEN 'Seventh Floor'
+            WHEN UPPER(TRIM(raw_floor)) LIKE '%8TH FLOOR%' THEN 'Eighth Floor'
+            WHEN UPPER(TRIM(raw_floor)) LIKE '%9TH FLOOR%' THEN 'Ninth Floor'
+            WHEN UPPER(TRIM(raw_floor)) LIKE '%ABOVE 10TH FLOOR%' THEN 'Above 10th Floor'
             ELSE 'Unknown Floor'
         END AS Floor,
 

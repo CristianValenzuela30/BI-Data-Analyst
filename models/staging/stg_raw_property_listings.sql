@@ -13,28 +13,27 @@ cleaned_and_imputed AS (
     SELECT
 
         -- ==== safe casting ====
-        try_to_decimal(raw_price) as Price, -- Added below to drop where price <= 15K
-        try_to_number(raw_living_area) as Living_Area,
-        try_to_number(raw_lot_size) as Lot_Size,
-        try_to_number(raw_parking) as Parking,
-        try_to_number(raw_construction_year) as Construction_Year,
-        try_to_date(raw_publish_date) as Publish_Date,
+        try_to_decimal(raw_price) as price, -- Added below to drop where price <= 15K
+        try_to_number(raw_living_area) as living_area,
+        try_to_number(raw_lot_size) as lot_size,
+        try_to_number(raw_parking) as parking,
+        try_to_number(raw_construction_year) as construction_year,
+        try_to_date(raw_publish_date) as publish_date,
         date(loaded_at) as Loaded_At, -- added loaded at column
-        try_to_number(raw_number_of_bedrooms) as Number_Of_Bedrooms,
-        try_to_number(raw_number_of_wc) as Number_of_WC,
+        -- deleted raw_number_of_bedrooms and raw_number_of_bathrooms
 
         -- ==== Keep and rename ====
-        {{title_case('raw_city')}} as City, -- This uses a macro that converts to title case (INITCAP) and also removes trailing or leading spaces (TRIM)
-        {{title_case('raw_town')}} as Town,
-        {{title_case('raw_district')}} as District,
-        {{title_case('raw_type')}} as Category,
-        {{title_case('raw_energy_certificate')}} as Energy_Certificate,
+        {{title_case('raw_city')}} as city, -- This uses a macro that converts to title case (INITCAP) and also removes trailing or leading spaces (TRIM)
+        {{title_case('raw_town')}} as town,
+        {{title_case('raw_district')}} as district,
+        {{title_case('raw_type')}} as category,
+        {{title_case('raw_energy_certificate')}} as energy_certificate,
 
         -- ==== Boolean Flags ====
-        raw_has_parking IN ('1', '1.0', 'True') as Has_Parking,
-        raw_elevator IN ('1', '1.0', 'True') as Elevator,
-        raw_garage IN ('1', '1.0', 'True') as Garage,
-        raw_electric_cars_charging IN ('1', '1.0', 'True') Electric_Car_Charge,
+        raw_has_parking IN ('1', '1.0', 'True') as has_parking,
+        raw_elevator IN ('1', '1.0', 'True') as elevator,
+        raw_garage IN ('1', '1.0', 'True') as garage,
+        raw_electric_cars_charging IN ('1', '1.0', 'True') electric_car_charge,
 
         -- ==== Floor Standardization ====
         CASE
@@ -50,14 +49,14 @@ cleaned_and_imputed AS (
             WHEN UPPER(raw_floor) LIKE '%9TH FLOOR%' THEN 'Ninth Floor'
             WHEN UPPER(raw_floor) LIKE '%ABOVE 10TH FLOOR%' THEN 'Above 10th Floor'
             ELSE 'Unknown Floor'
-        END AS Floor_Standardized,
+        END AS Floor,
 
 
 
         -- Conservation Status
         COALESCE (
             NULLIF({{title_case('raw_conservation_status')}}, ''), 'Unknown'
-        ) AS Conservation_Status
+        ) AS conservation_status
 
     FROM source
 )
@@ -67,10 +66,10 @@ Select * FROM cleaned_and_imputed
 WHERE 
     -- Critical Filter to eliminate unwanted rows
     Category IN ('Apartment', 'House', 'Land')
-    AND City IS NOT NULL
-    AND Town IS NOT NULL
-    AND Price > 15000
-    AND Price IS NOT NULL
-    AND (Living_Area BETWEEN 30 AND 3000 OR Living_Area IS NULL) 
-    AND (Lot_Size > 100 OR Lot_Size IS NULL)
-    AND (Number_Of_Bedrooms <= 4 OR Number_Of_Bedrooms IS NULL)
+    AND city IS NOT NULL
+    AND town IS NOT NULL
+    AND price > 15000
+    AND price IS NOT NULL
+    AND (living_area BETWEEN 30 AND 3000 OR living_area IS NULL) 
+    AND (lot_size > 100 OR lot_size IS NULL)
+    AND (number_of_bedrooms <= 4 OR number_of_bedrooms IS NULL)

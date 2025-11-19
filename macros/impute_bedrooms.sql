@@ -1,8 +1,8 @@
-{% macro impute_bedrooms(category, number_of_bedrooms, number_of_wc, living_area) %}
+{% macro impute_bedrooms(category, raw_number_of_bedrooms, raw_number_of_wc, living_area) %}
   CASE
     WHEN {{ category }} = 'Land' THEN 0
 
-    WHEN {{ category }} IN ('Apartment', 'House') AND COALESCE({{ number_of_bedrooms }}, 0) = 0 THEN
+    WHEN {{ category }} IN ('Apartment', 'House') AND COALESCE({{ raw_number_of_bedrooms }}, 0) = 0 THEN
       CASE
         WHEN {{ living_area }} IS NULL THEN 1
         WHEN {{ living_area }} < 30 THEN 1 
@@ -12,6 +12,6 @@
         ELSE 5
       END
     -- THIS LINE CHANGED: CAP AT 5 EVEN IF RAW VALUE HIGHER  
-    ELSE LEAST(COALESCE({{ number_of_bedrooms }}, 0), 5)
+    ELSE LEAST(COALESCE({{ raw_number_of_bedrooms }}, 0), 5)
   END
 {% endmacro %}

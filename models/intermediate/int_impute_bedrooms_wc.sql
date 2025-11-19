@@ -17,7 +17,7 @@ SELECT
     )}} AS number_of_wc_imputed,
 
     -- Create Surrogate Key using 5 columns
-    {{ dbt_utils.surrogate_key([
+    {{ dbt_utils.generate_surrogate_key([
         'city',
         'town',
         'district',

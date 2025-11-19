@@ -20,10 +20,8 @@ cleaned_and_imputed AS (
         try_to_number(raw_construction_year) as Construction_Year,
         try_to_date(raw_publish_date) as Publish_Date,
         date(loaded_at) as Loaded_At, -- added loaded at column
-        --try_to_number(raw_total_rooms) as Number_Of_Rooms, -- doesnt really add anything, so it will be left out
         try_to_number(raw_number_of_bedrooms) as Number_Of_Bedrooms,
-        try_to_number(raw_number_of_wc) as Number_of_WC, 
-        try_to_number(raw_number_of_bathrooms) as Number_of_Bathrooms,
+        try_to_number(raw_number_of_wc) as Number_of_WC,
 
         -- ==== Keep and rename ====
         {{title_case('raw_city')}} as City, -- This uses a macro that converts to title case (INITCAP) and also removes trailing or leading spaces (TRIM)
@@ -31,7 +29,6 @@ cleaned_and_imputed AS (
         {{title_case('raw_district')}} as District,
         {{title_case('raw_type')}} as Category,
         {{title_case('raw_energy_certificate')}} as Energy_Certificate,
-        --{{title_case('raw_conservation_status')}} as Conversation_Status,
 
         -- ==== Boolean Flags ====
         raw_has_parking IN ('1', '1.0', 'True') as Has_Parking,

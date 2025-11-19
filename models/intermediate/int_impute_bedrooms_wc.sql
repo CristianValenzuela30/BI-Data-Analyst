@@ -27,7 +27,8 @@ SELECT
     'construction_year',  
     'floor',              
     'number_of_bedrooms_imputed',  
-    'number_of_wc_imputed'        
+    'number_of_wc_imputed',
+    'publish_date'        
     ]) }} AS property_surrogate_key
 
 FROM {{ ref('stg_raw_property_listings') }}

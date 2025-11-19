@@ -16,14 +16,18 @@ SELECT
         'living_area'
     )}} AS number_of_wc_imputed,
 
-    -- Create Surrogate Key using 5 columns
+    -- Create Surrogate Key using Multiple columns (recommended)
     {{ dbt_utils.generate_surrogate_key([
-        'city',
-        'town',
-        'district',
-        'living_area',
-        'construction_year',
-        'category'
-    ]) }} as property_surrogate_key
-    
+    'city',
+    'town', 
+    'district',
+    'category',           
+    'living_area',        
+    'lot_size',           
+    'construction_year',  
+    'floor',              
+    'number_of_bedrooms_imputed',  
+    'number_of_wc_imputed'        
+    ]) }} AS property_surrogate_key
+
 FROM {{ ref('stg_raw_property_listings') }}

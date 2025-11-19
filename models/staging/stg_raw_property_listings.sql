@@ -49,11 +49,11 @@ cleaned_and_imputed AS (
             WHEN UPPER(raw_floor) LIKE '%5TH FLOOR%' THEN 'Fifth'
             WHEN UPPER(raw_floor) LIKE '%6TH FLOOR%' THEN 'Sixth'
             WHEN UPPER(raw_floor) LIKE '%7TH FLOOR%' THEN 'Seventh'
-            WHEN UPPER(raw_floor) LIKE '%8TH FLOOR%' THEN 'Eight'
-            WHEN UPPER(raw_floor) LIKE '%9TH FLOOR%' THEN 'Nineth'
+            WHEN UPPER(raw_floor) LIKE '%8TH FLOOR%' THEN 'Eighth'
+            WHEN UPPER(raw_floor) LIKE '%9TH FLOOR%' THEN 'Ninth'
             WHEN UPPER(raw_floor) LIKE '%ABOVE 10TH FLOOR%' THEN 'Above 10th Floor'
             ELSE 'Unknown Floor'
-        END AS Floor_Standardization,
+        END AS Floor_Standardized,
 
 
 
@@ -75,5 +75,6 @@ WHERE
     AND Price > 15000
     AND Price IS NOT NULL
     AND (Living_Area > 29 OR Living_Area IS NULL)
+    AND NOT Living_Area > 3000
     AND (Lot_Size > 29 OR Lot_Size IS NULL)
     AND (Number_Of_Bedrooms <= 4 OR Number_Of_Bedrooms IS NULL)

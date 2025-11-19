@@ -21,6 +21,10 @@ cleaned_and_imputed AS (
         try_to_date(raw_publish_date) as publish_date,
         date(loaded_at) as Loaded_At, -- added loaded at column
 
+        -- keep raw strings for imputation
+        try_to_number(raw_number_of_bedrooms) as raw_number_of_bedrooms,
+        try_to_number(raw_number_of_wc) as raw_number_of_wc,
+
         -- ==== Keep and rename ====
         {{title_case('raw_city')}} as city, -- This uses a macro that converts to title case (INITCAP) and also removes trailing or leading spaces (TRIM)
         {{title_case('raw_town')}} as town,

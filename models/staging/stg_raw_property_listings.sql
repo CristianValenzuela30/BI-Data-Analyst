@@ -72,4 +72,4 @@ WHERE
     AND price IS NOT NULL
     AND (living_area BETWEEN 30 AND 3000 OR living_area IS NULL) 
     AND (lot_size > 100 OR lot_size IS NULL)
-    AND (number_of_bedrooms <= 4 OR number_of_bedrooms IS NULL)
+    AND (raw_number_of_bedrooms <= 4 OR raw_number_of_bedrooms IS NULL)

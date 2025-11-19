@@ -20,7 +20,7 @@ cleaned_and_imputed AS (
         try_to_number(raw_construction_year) as construction_year,
         try_to_date(raw_publish_date) as publish_date,
         date(loaded_at) as Loaded_At, -- added loaded at column
-        try_to_number(raw_number_of_bedrooms),
+        try_to_number(raw_number_of_bedrooms) as bedrooms_raw_temp,
 
         -- ==== Keep and rename ====
         {{title_case('raw_city')}} as city, -- This uses a macro that converts to title case (INITCAP) and also removes trailing or leading spaces (TRIM)
@@ -62,7 +62,7 @@ cleaned_and_imputed AS (
 )
 
 -- Final Selection and Filtering
-Select * EXCEPT(raw_number_of_bedrooms) FROM cleaned_and_imputed
+Select * EXCEPT(bedrooms_raw_temp) FROM cleaned_and_imputed
 WHERE 
     -- Critical Filter to eliminate unwanted rows
     Category IN ('Apartment', 'House', 'Land')
@@ -72,4 +72,4 @@ WHERE
     AND price IS NOT NULL
     AND (living_area BETWEEN 30 AND 3000 OR living_area IS NULL) 
     AND (lot_size > 100 OR lot_size IS NULL)
-    AND (raw_number_of_bedrooms <= 4 OR raw_number_of_bedrooms IS NULL)
+    AND (try_to_number(raw_number_of_bedrooms) <= 4 OR raw_number_of_bedrooms IS NULL)

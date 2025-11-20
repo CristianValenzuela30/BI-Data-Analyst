@@ -30,6 +30,6 @@ deduplication as (
 /* final output; clean, one row per property per publish_date with avgeraged price */
 
 select
-    * EXCLUDE(rn, price_avg_same_day),
+    * EXCLUDE(rn, price_avg_same_day, raw_number_of_bedrooms, raw_number_of_wc),
     price_avg_same_day -- as price -- renamed price back to 'price'
 from deduplication

@@ -1,7 +1,7 @@
 {{ config(materialized='table') }}
 
 select
-    {{ dbt_utils.generate_surrogate_key(['property_surrogate_key', 's.publish_date']) }} as fact_key,
+    {{ dbt_utils.generate_surrogate_key(['s.property_surrogate_key', 's.publish_date']) }} as fact_key,
     p.property_key,
     l.location_key,
     d.date_key,

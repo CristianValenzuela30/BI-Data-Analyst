@@ -75,4 +75,4 @@ filtered AS (
         (price_variation > 0.08)
 )
 
-SELECT * FROM filtered;
+SELECT * FROM filtered

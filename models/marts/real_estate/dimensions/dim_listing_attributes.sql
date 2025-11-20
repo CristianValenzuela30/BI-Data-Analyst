@@ -8,9 +8,9 @@ select distinct
         'garage',
         'electric_car_charge'
     ])}} as attribute_key,
-    'energy_certificate',
-    'has_parking',
-    'elevator',
-    'garage',
-    'electric_car_charge'
+    energy_certificate,
+    has_parking,
+    elevator,
+    garage,
+    electric_car_charge
 from {{ref('int_deduplicated_properties')}}

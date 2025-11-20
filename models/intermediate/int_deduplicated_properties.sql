@@ -57,7 +57,7 @@ WITH base AS (
 price_check AS (
     SELECT
         *,
-        ABS(Price - base_price) / NULLIF(base_price, 0) AS price_variation
+        ABS(price - base_price) / NULLIF(base_price, 0) AS price_variation
     FROM base
 ),
 
@@ -71,7 +71,7 @@ filtered AS (
 
         OR
 
-        /* Rule B: Price difference > 10% → keep all (treated as unique) */
+        /* Rule B: Price difference > 8% → keep all (treated as unique) */
         (price_variation > 0.08)
 )
 

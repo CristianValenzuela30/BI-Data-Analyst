@@ -1,7 +1,7 @@
 {{config(materialized='table')}}
 
 select
-    {{dbt_utils.generate_surrogate_key(['property_surrogate_key', 's.publish_date'])}} as fact_key,
+    {{dbt_utils.generate_surrogate_key(['property_surrogate_key', 's.valid_from'])}} as fact_key,
     p.property_key,
     l.location_key,
     d.date_key,
@@ -16,12 +16,12 @@ select
     s.elevator,
     s.garage,
     s.electric_car_charge,
-    s.publish_date,
+    s.valid_from,
     s.loaded_at
 from {{ref('int_deduplicated_properties')}} as s
-left join {{ref("dim_property")}}           as p using (property_surrogate_key, s.publish_date)
+left join {{ref("dim_property")}}           as p using (property_surrogate_key, valid_from)
 left join {{ref('dim_location')}}           as l using (city, town, district)
-left join {{ref('dim_date')}}               as d on s.publish_date = d.date_day
+left join {{ref('dim_date')}}               as d on s.valid_from = d.date_day
 left join {{ref('dim_listing_attributes')}} as a
     on s.energy_certificate = a.energy_certificate
     AND s.has_parking = a.has_parking

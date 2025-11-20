@@ -1,44 +1,35 @@
-WITH date_groups AS (
-    SELECT
+{{config(materialized='view')}}
+
+/* step 1: average the price when the same property has the same publish date */
+with with_avg_price as (
+    select
         *,
-        -- Calculate base price per date group FIRST
-        FIRST_VALUE(price) OVER (
-            PARTITION BY 
-                district, city, town, category, energy_certificate,
-                living_area, lot_size, parking, has_parking, floor,
-                construction_year, garage, elevator, electric_car_charge,
-                raw_number_of_bedrooms, conservation_status, raw_number_of_wc,
-                publish_date
-            ORDER BY publish_date DESC
-        ) AS group_base_price
-    FROM {{ ref('stg_raw_property_listings') }}
+        avg(price) over(
+            partition by
+                property_surrogate_key, publish_date
+        ) as price_avg_same_day
+    from {{ref('int_impute_bedrooms_wc')}}
 ),
 
-base AS (
-    SELECT
-        *,
-        ROW_NUMBER() OVER (
-            PARTITION BY 
-                district, city, town, category, energy_certificate,
-                living_area, lot_size, parking, has_parking, floor,
-                construction_year, garage, elevator, electric_car_charge,
-                raw_number_of_bedrooms, conservation_status, raw_number_of_wc,
-                publish_date
-            ORDER BY publish_date DESC
-        ) AS rn_by_date
-    FROM date_groups
-),
+/* Step 2:  deduplicate - keep only the most recent scrape of that day */
 
-price_check AS (
-    SELECT
-        *,
-        ABS(price - group_base_price) / NULLIF(group_base_price, 0) AS price_variation
-    FROM base
+deduplication as (
+    select *
+    from (
+        select
+            *,
+            row_number() over(
+                partition by property_surrogate_key, publish_date
+                order by loaded_at DESC
+            ) as rn
+        from with_avg_price
+    ) as ranked
+    where rn = 1
 )
 
-SELECT *
-FROM price_check
-WHERE 
-    (price_variation <= 0.08 AND rn_by_date = 1)
-    OR 
-    (price_variation > 0.08)
+/* final output; clean, one row per property per publish_date with avgeraged price */
+
+select
+    * EXCLUDE(rn, price_avg_same_day),
+    price_avg_same_day -- as price -- renamed price back to 'price'
+from deduplication

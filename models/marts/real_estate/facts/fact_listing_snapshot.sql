@@ -5,7 +5,7 @@ select
     p.property_key,
     l.location_key,
     d.date_key,
-    a.attribute_key
+    a.attribute_key,
     s.price,
     s.living_area,
     s.lot_size,

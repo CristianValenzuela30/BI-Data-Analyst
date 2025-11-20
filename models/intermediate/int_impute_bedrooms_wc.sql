@@ -34,4 +34,4 @@ SELECT
     'number_of_wc_imputed',     
     ]) }} AS property_surrogate_key
 
-FROM {{ ref('int_deduplicated_properties') }}
+FROM {{ ref('stg_raw_property_listings') }}

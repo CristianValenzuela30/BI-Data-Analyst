@@ -16,6 +16,7 @@ SELECT
     s.living_area,
     s.lot_size,
     s.construction_year,
+    p.category,
     s.number_of_bedrooms_imputed AS bedrooms,     -- REAL column name
     s.number_of_wc_imputed       AS bathrooms,    -- REAL column name
     s.energy_certificate,

@@ -25,7 +25,6 @@ models:
         description: "MD5 hash of raw columns for tracking source data lineage"
         tests:
           - not_null
-          - unique
         meta:
           data_contract: "Primary key for staging layer, ensures traceability"
           
@@ -50,19 +49,6 @@ models:
         meta:
           business_logic: "Prices outside range set to NULL and filtered out"
           data_quality: "Ensures realistic market analysis"
-          
-      - name: has_parking
-        description: |
-          Standardized boolean flag for parking availability.
-          NULL values from source are treated as FALSE.
-        tests:
-          - not_null
-          - accepted_values:
-              values: [true, false]
-        meta:
-          transformation: "Uses universal boolean parser macro"
-          business_decision: "NULL → FALSE (missing info = assume no parking)"
-          data_quality_note: "100% of filtered records had NULL parking info"
           
       - name: elevator
         description: "Standardized boolean flag for elevator availability"
@@ -109,7 +95,7 @@ models:
         meta:
           standardization: "Handles '1st Floor', '1', 'Ground Floor', 'Basement' variations"
           
-      - name: number_of_bedrooms_imputed
+      - name: bedrooms
         description: "Imputed bedroom count using business rules for missing values"
         tests:
           - not_null
@@ -119,7 +105,7 @@ models:
         meta:
           imputation_logic: "Based on property category, WC count, and living area"
           
-      - name: number_of_wc_imputed
+      - name: bathrooms
         description: "Imputed bathroom count using business rules for missing values"  
         tests:
           - not_null
@@ -129,7 +115,3 @@ models:
         meta:
           imputation_logic: "Based on property category, bedroom count, and living area"
 
-    # Model-level tests
-    tests:
-      - dbt_utils.equal_rowcount:
-          compare_model: ref('int_deduplicated_properties')

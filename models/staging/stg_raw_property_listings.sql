@@ -75,6 +75,49 @@ cleaned_and_imputed AS (
             WHEN raw_has_parking = TRUE THEN TRUE
             ELSE FALSE
         END AS CASE_HAS_PARKING,
+        
+        CASE
+            WHEN raw_has_parking = 'True' THEN TRUE
+            ELSE FALSE
+        END AS CASE_HAS_PARKING_1,
+
+        CASE
+            WHEN raw_has_parking = 'TRUE' THEN TRUE
+            ELSE FALSE
+        END AS CASE_HAS_PARKING_2,
+
+        raw_has_parking ILIKE 'True' as has_parking_1,
+        raw_has_parking ILIKE 'true' as has_parking_1_1,
+        raw_has_parking ILIKE 'TRUE' as has_parking_2,
+        (raw_has_parking::Boolean) as has_parking_3,
+        (raw_has_parking::boolean) as has_parking_4,
+        
+        CASE
+            WHEN raw_has_parking ILIKE 'true' THEN TRUE
+            WHEN raw_has_parking ILIKE 'false' THEN FALSE
+            ELSE NULL   -- blanks, weird strings, nulls
+        END AS has_parking_5,
+
+                
+        CASE
+            WHEN raw_has_parking ILIKE 'True' THEN TRUE
+            WHEN raw_has_parking ILIKE 'False' THEN FALSE
+            ELSE NULL   -- blanks, weird strings, nulls
+        END AS has_parking_6,
+
+                
+        CASE
+            WHEN raw_has_parking ILIKE 'TRUE' THEN TRUE
+            WHEN raw_has_parking ILIKE 'FALSE' THEN FALSE
+            ELSE NULL   -- blanks, weird strings, nulls
+        END AS has_parking_7,
+
+        (raw_has_parking ILIKE 'true') AS has_parking_8,
+        (raw_has_parking ILIKE 'True') AS has_parking_9,
+        (raw_has_parking ILIKE 'TRUE') AS has_parking_10,
+
+
+
         try_to_boolean(raw_has_parking) as has_parking,
         raw_elevator = 'True' as elevator,
         raw_garage = 'True' as garage,

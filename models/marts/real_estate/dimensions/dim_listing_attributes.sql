@@ -1,18 +1,25 @@
-{{ config(materialized='view') }}
+{{config(materialized='view')}}
 
-SELECT DISTINCT
-    {{ dbt_utils.generate_surrogate_key([
+with distinct_attributes as (
+    select distinct
+        COALESCE(energy_certificate, 'Unknown') as energy_certificate,
+        COALESCE(has_parking, False) as has_parking,
+        COALESCE(elevator, False) as elevator,
+        COALESCE(garage, False) as garage,
+        COALESCE(electric_car_charge, False) as electric_car_charge
+    from {{ref('int_deduplicated_properties')}}
+)
+select
+    {{dbt_utils.generate_surrogate_key([
         'energy_certificate',
-        'has_parking', 
+        'has_parking',
         'elevator',
         'garage',
         'electric_car_charge'
-    ]) }} AS attribute_key,
-
-    COALESCE(energy_certificate, 'Unknown') as energy_certificate,
+    ])}} as attribute_key,
+    energy_certificate,
     has_parking,
     elevator,
     garage,
     electric_car_charge
-
-FROM {{ ref('int_deduplicated_properties') }}
+from distinct_attributes

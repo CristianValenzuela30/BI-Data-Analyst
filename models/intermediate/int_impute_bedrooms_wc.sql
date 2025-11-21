@@ -23,6 +23,7 @@ SELECT
     'district',
     'category',
     'conservation_status',
+    'has_parking',
     'elevator',
     'garage',           
     'living_area',        

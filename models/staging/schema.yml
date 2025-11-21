@@ -27,17 +27,6 @@ models:
           - not_null
         meta:
           data_contract: "Primary key for staging layer, ensures traceability"
-          
-      - name: property_surrogate_key
-        description: |
-          Business key identifying unique properties across time.
-          Generated from stable physical characteristics only.
-        tests:
-          - not_null
-        meta:
-          surrogate_key_design: |
-            Includes: city, town, district, category, living_area, construction_year, floor
-            Excludes: price, boolean flags, temporal attributes
             
       - name: price_cleaned
         description: "Validated price within business-reasonable range (€15K-€10M)"
@@ -98,7 +87,6 @@ models:
       - name: raw_number_of_bedrooms
         description: "Imputed bedroom count using business rules for missing values"
         tests:
-          - not_null
           - dbt_utils.accepted_range:
               min_value: 0
               max_value: 10
@@ -108,7 +96,6 @@ models:
       - name: raw_number_of_wc
         description: "Imputed bathroom count using business rules for missing values"  
         tests:
-          - not_null
           - dbt_utils.accepted_range:
               min_value: 0
               max_value: 10

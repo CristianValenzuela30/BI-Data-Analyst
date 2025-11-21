@@ -71,10 +71,18 @@ cleaned_and_imputed AS (
         END AS energy_certificate,
 
         -- ==== Boolean Flags (with NULL handling) ====
-        raw_has_parking = 'True' as has_parking,
+
+        CASE
+            WHEN TRIM(LOWER(raw_has_parking)) IN ('true', 't', 'y', '1') THEN TRUE
+            WHEN TRIM(LOWER(raw_has_parking)) IN ('false', 'f', 'n', '0') THEN FALSE
+            ELSE NULL
+        END AS has_parking,
+        
+        try_to_boolean(raw_has_parking) as _try_to_boolean_has_parking, /*case sensitive*/
         raw_elevator = 'True' as elevator,
         raw_garage = 'True' as garage,
-        raw_electric_cars_charging = 'True' as electric_car_charge,
+        COALESCE(NULLIF(TRIM(raw_electric_cars_charging), '') ILIKE ANY ('TRUE', 'True', 'true', 'Y', '1'),
+        FALSE) AS electric_car_charge,
 
         -- ==== Floor (standardized with NULL handling) ====
         CASE

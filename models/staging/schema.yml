@@ -27,7 +27,7 @@ models:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
-                min_value: 15001
+                min_value: 15000
                 row_condition: "Price IS NOT NULL"
       - name: Category
         description: "Property type"

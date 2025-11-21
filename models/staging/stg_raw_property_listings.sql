@@ -71,7 +71,7 @@ cleaned_and_imputed AS (
         END AS energy_certificate,
 
         -- ==== Boolean Flags (with NULL handling) ====
-        raw_has_parking = 'True' as has_parking,
+        TRIM(raw_has_parking) = 'True' as has_parking,
         raw_elevator = 'True' as elevator,
         raw_garage = 'True' as garage,
         raw_electric_cars_charging = 'True' as electric_car_charge,

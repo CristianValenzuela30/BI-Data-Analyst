@@ -95,7 +95,7 @@ models:
         meta:
           standardization: "Handles '1st Floor', '1', 'Ground Floor', 'Basement' variations"
           
-      - name: bedrooms
+      - name: raw_number_of_bedrooms
         description: "Imputed bedroom count using business rules for missing values"
         tests:
           - not_null
@@ -105,7 +105,7 @@ models:
         meta:
           imputation_logic: "Based on property category, WC count, and living area"
           
-      - name: bathrooms
+      - name: raw_number_of_wc
         description: "Imputed bathroom count using business rules for missing values"  
         tests:
           - not_null

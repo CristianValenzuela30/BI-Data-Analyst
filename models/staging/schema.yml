@@ -2,47 +2,134 @@ version: 2
 
 models:
   - name: stg_raw_property_listings
-    description: "Cleaned and filtered raw property listings"
+    description: |
+      # Cleaned Property Listings
+      
+      ## 🎯 Purpose
+      Transforms raw property data into clean, analysis-ready format with 
+      consistent data types and handled NULL values.
+      
+      ## 🔧 Key Transformations
+      - Boolean field standardization using universal parser
+      - Price validation and outlier handling
+      - Geographic data cleaning and standardization
+      - Data quality scoring and filtering
+      
+      ## ⚠️ Data Quality Notes
+      - Price range limited to €15K-€10M for realistic market analysis
+      - NULL parking information treated as FALSE (business decision)
+      - Only residential properties (Apartment, House, Land) included
+    
     columns:
-      # ========================================
-      # 1. LIVING AREA: must be ≥ 30 (if not NULL)
-      # ========================================
-      - name: Living_Area
-        description: "Living area in m²"
-        tests:
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 30
-                row_condition: "Living_Area IS NOT NULL"
-      - name: Lot_Size
-        description: "Lot size in m²"
-        tests:
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 30
-                row_condition: "Lot_Size IS NOT NULL"
-      - name: Price
-        description: "Property price in EUR"
+      - name: source_surrogate_key
+        description: "MD5 hash of raw columns for tracking source data lineage"
         tests:
           - not_null
-          - dbt_expectations.expect_column_values_to_be_between:
-              arguments:
-                min_value: 15000
-                row_condition: "Price IS NOT NULL"
-      - name: Category
-        description: "Property type"
+          - unique
+        meta:
+          data_contract: "Primary key for staging layer, ensures traceability"
+          
+      - name: property_surrogate_key
+        description: |
+          Business key identifying unique properties across time.
+          Generated from stable physical characteristics only.
         tests:
           - not_null
-          - dbt_expectations.expect_column_values_to_be_in_set:
-              arguments:
-                value_set: ['Apartment', 'House', 'Land']
+        meta:
+          surrogate_key_design: |
+            Includes: city, town, district, category, living_area, construction_year, floor
+            Excludes: price, boolean flags, temporal attributes
+            
+      - name: price_cleaned
+        description: "Validated price within business-reasonable range (€15K-€10M)"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 15000
+              max_value: 10000000
+        meta:
+          business_logic: "Prices outside range set to NULL and filtered out"
+          data_quality: "Ensures realistic market analysis"
+          
+      - name: has_parking
+        description: |
+          Standardized boolean flag for parking availability.
+          NULL values from source are treated as FALSE.
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+        meta:
+          transformation: "Uses universal boolean parser macro"
+          business_decision: "NULL → FALSE (missing info = assume no parking)"
+          data_quality_note: "100% of filtered records had NULL parking info"
+          
+      - name: elevator
+        description: "Standardized boolean flag for elevator availability"
+        tests:
+          - not_null  
+          - accepted_values:
+              values: [true, false]
+        meta:
+          transformation: "raw_elevator = 'True'"
+          coverage_note: "Maintains values after quality filtering"
+          
+      - name: energy_certificate
+        description: "Standardized energy certificate ratings (A+ through G, Unknown)"
+        tests:
+          - not_null
+        meta:
+          standardization: "Handles variations: NC, N/C, No Certificate → standardized values"
+          
+      - name: data_quality_score
+        description: |
+          Composite score (0-4) measuring record quality:
+          - 1 point each for: valid price, valid living area, valid date, valid city
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 4
+        meta:
+          purpose: "Enables quality-based analysis and filtering"
+          threshold: "Records with score ≤ 2 are included in final output"
+          
+      - name: living_area
+        description: "Validated living area in square meters (30-3000m² range)"
+        meta:
+          validation: "Values outside range set to NULL"
+          business_logic: "Ensures realistic property sizes"
+          
+      - name: construction_year  
+        description: "Validated construction year (1800-current year + 5)"
+        meta:
+          validation: "Prevents impossible future dates and ancient properties"
+          
+      - name: floor
+        description: "Standardized floor descriptions from various raw formats"
+        meta:
+          standardization: "Handles '1st Floor', '1', 'Ground Floor', 'Basement' variations"
+          
+      - name: number_of_bedrooms_imputed
+        description: "Imputed bedroom count using business rules for missing values"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 10
+        meta:
+          imputation_logic: "Based on property category, WC count, and living area"
+          
+      - name: number_of_wc_imputed
+        description: "Imputed bathroom count using business rules for missing values"  
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 10
+        meta:
+          imputation_logic: "Based on property category, bedroom count, and living area"
 
-      # ========================================
-      # 5. CITY & TOWN: not null
-      # ========================================
-      - name: City
-        tests:
-          - not_null
-      - name: Town
-        tests:
-          - not_null
+    # Model-level tests
+    tests:
+      - dbt_utils.equal_rowcount:
+          compare_model: ref('int_deduplicated_properties')

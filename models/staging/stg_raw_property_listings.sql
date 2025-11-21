@@ -71,6 +71,10 @@ cleaned_and_imputed AS (
         END AS energy_certificate,
 
         -- ==== Boolean Flags (with NULL handling) ====
+        CASE
+            WHEN raw_has_parking = TRUE THEN TRUE
+            ELSE FALSE
+        END AS CASE_HAS_PARKING,
         try_to_boolean(raw_has_parking) as has_parking,
         raw_elevator = 'True' as elevator,
         raw_garage = 'True' as garage,

@@ -71,10 +71,8 @@ cleaned_and_imputed AS (
         END AS energy_certificate,
 
         -- ==== Boolean Flags (with NULL handling) ====
-        COALESCE(raw_has_parking IN ('1', '1.0', 'True'), FALSE) as has_parking,
-        COALESCE(raw_elevator IN ('1', '1.0', 'True'), FALSE) as elevator,
-        COALESCE(raw_garage IN ('1', '1.0', 'True'), FALSE) as garage,
-        COALESCE(raw_electric_cars_charging IN ('1', '1.0', 'True'), FALSE) as electric_car_charge,
+        raw_has_parking = 'True' as has_parking,
+        raw_elevator = 'True' as elevator,  
 
         -- ==== Floor (standardized with NULL handling) ====
         CASE

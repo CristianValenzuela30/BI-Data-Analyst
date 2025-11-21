@@ -31,8 +31,8 @@ LEFT JOIN {{ ref('dim_location') }} AS l
 LEFT JOIN {{ ref('dim_date') }} AS d
     ON s.publish_date = d.date_day
 LEFT JOIN {{ ref('dim_listing_attributes') }} AS a
-    ON s.energy_certificate     = a.energy_certificate
-   AND s.has_parking            = a.has_parking
-   AND s.elevator               = a.elevator
-   AND s.garage                 = a.garage
-   AND s.electric_car_charge    = a.electric_car_charge
+    ON COALESCE(s.energy_certificate, 'Unknown')     = a.energy_certificate
+   AND COALESCE(s.has_parking, False)                = a.has_parking
+   AND COALESCE(s.elevator, False)                   = a.elevator
+   AND COALESCE(s.garage, False)                     = a.garage
+   AND COALESCE(s.electric_car_charge, False)        = a.electric_car_charge

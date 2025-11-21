@@ -72,7 +72,9 @@ cleaned_and_imputed AS (
 
         -- ==== Boolean Flags (with NULL handling) ====
         raw_has_parking = 'True' as has_parking,
-        raw_elevator = 'True' as elevator,  
+        raw_elevator = 'True' as elevator,
+        raw_garage = 'True' as garage,
+        raw_electric_cars_charging = 'True' as electric_car_charge
 
         -- ==== Floor (standardized with NULL handling) ====
         CASE

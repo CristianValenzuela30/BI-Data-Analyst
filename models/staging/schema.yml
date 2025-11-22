@@ -4,100 +4,105 @@ models:
   - name: stg_raw_property_listings
     description: |
       # Cleaned Property Listings
-      
+
       ## 🎯 Purpose
       Transforms raw property data into clean, analysis-ready format with 
       consistent data types and handled NULL values.
-      
+
       ## 🔧 Key Transformations
       - Boolean field standardization using universal parser
       - Price validation and outlier handling
       - Geographic data cleaning and standardization
       - Data quality scoring and filtering
-      
+
       ## ⚠️ Data Quality Notes
       - Price range limited to €15K-€10M for realistic market analysis
       - NULL parking information treated as FALSE (business decision)
       - Only residential properties (Apartment, House, Land) included
-    
+
     columns:
       - name: source_surrogate_key
         description: "MD5 hash of raw columns for tracking source data lineage"
         tests:
           - not_null
-        meta:
-          data_contract: "Primary key for staging layer, ensures traceability"
-            
+        config:
+          meta:
+            data_contract: "Primary key for staging layer, ensures traceability"
       - name: price_cleaned
         description: "Validated price within business-reasonable range (€15K-€10M)"
         tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 15000
-              max_value: 10000000
-        meta:
-          business_logic: "Prices outside range set to NULL and filtered out"
-          data_quality: "Ensures realistic market analysis"
-          
+              arguments:
+                min_value: 15000
+                max_value: 10000000
+        config:
+          meta:
+            business_logic: "Prices outside range set to NULL and filtered out"
+            data_quality: "Ensures realistic market analysis"
       - name: elevator
         description: "Standardized boolean flag for elevator availability"
         tests:
-          - not_null  
+          - not_null
           - accepted_values:
-              values: [true, false]
-        meta:
-          transformation: "raw_elevator = 'True'"
-          coverage_note: "Maintains values after quality filtering"
-          
+              arguments:
+                values: [true, false]
+        config:
+          meta:
+            transformation: "raw_elevator = 'True'"
+            coverage_note: "Maintains values after quality filtering"
       - name: energy_certificate
         description: "Standardized energy certificate ratings (A+ through G, Unknown)"
         tests:
           - not_null
-        meta:
-          standardization: "Handles variations: NC, N/C, No Certificate → standardized values"
-          
+        config:
+          meta:
+            standardization: "Handles variations: NC, N/C, No Certificate → standardized values"
       - name: data_quality_score
         description: |
           Composite score (0-4) measuring record quality:
           - 1 point each for: valid price, valid living area, valid date, valid city
         tests:
           - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 4
-        meta:
-          purpose: "Enables quality-based analysis and filtering"
-          threshold: "Records with score ≤ 2 are included in final output"
-          
+              arguments:
+                min_value: 0
+                max_value: 4
+        config:
+          meta:
+            purpose: "Enables quality-based analysis and filtering"
+            threshold: "Records with score ≤ 2 are included in final output"
       - name: living_area
         description: "Validated living area in square meters (30-3000m² range)"
-        meta:
-          validation: "Values outside range set to NULL"
-          business_logic: "Ensures realistic property sizes"
-          
-      - name: construction_year  
+        config:
+          meta:
+            validation: "Values outside range set to NULL"
+            business_logic: "Ensures realistic property sizes"
+      - name: construction_year
         description: "Validated construction year (1800-current year + 5)"
-        meta:
-          validation: "Prevents impossible future dates and ancient properties"
-          
+        config:
+          meta:
+            validation: "Prevents impossible future dates and ancient properties"
       - name: floor
         description: "Standardized floor descriptions from various raw formats"
-        meta:
-          standardization: "Handles '1st Floor', '1', 'Ground Floor', 'Basement' variations"
-          
+        config:
+          meta:
+            standardization: "Handles '1st Floor', '1', 'Ground Floor', 'Basement' variations"
       - name: raw_number_of_bedrooms
         description: "Imputed bedroom count using business rules for missing values"
         tests:
           - dbt_utils.accepted_range:
-              min_value: 0
-        meta:
-          imputation_logic: "Based on property category, WC count, and living area"
-          
+              arguments:
+                min_value: 0
+        config:
+          meta:
+            imputation_logic: "Based on property category, WC count, and living area"
       - name: raw_number_of_wc
-        description: "Imputed bathroom count using business rules for missing values"  
+        description: "Imputed bathroom count using business rules for missing values"
         tests:
           - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 10
-        meta:
-          imputation_logic: "Based on property category, bedroom count, and living area"
-
+              arguments:
+                min_value: 0
+                max_value: 10
+        config:
+          meta:
+            imputation_logic: "Based on property category, bedroom count, and living area"

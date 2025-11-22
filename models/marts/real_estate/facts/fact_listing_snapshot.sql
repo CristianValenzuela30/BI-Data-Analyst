@@ -1,4 +1,8 @@
-{{ config(materialized='table') }}
+{{ config(
+    materialized='table',
+    cluster_by=['city', 'date_key']
+    )
+ }}
 
 -- NOTE:
 -- has_parking excluded from fact model because upstream filters

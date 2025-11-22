@@ -21,6 +21,6 @@ SELECT
     -- Latest data timestamp for freshness tracking
     MAX(PUBLISH_DATE) as last_publish_date,
     CURRENT_TIMESTAMP() as dbt_updated_at
-FROM {{ ref('property_fact') }} pf
-JOIN {{ ref('location_dim') }} l ON pf.LOCATION_KEY = l.LOCATION_KEY
+FROM {{ ref('fact_listing_snapshot') }} pf
+JOIN {{ ref('dim_location') }} l ON pf.LOCATION_KEY = l.LOCATION_KEY
 GROUP BY CITY, TOWN, DISTRICT
